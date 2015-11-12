@@ -31,12 +31,8 @@ class MuseServer(ServerThread):
     def gamma_callback(self, path, args):
         l_ear, l_forehead, r_forehead, r_ear = args
         self.gamma = list(args)
-    alpha = [0]
-    delta = [0]
-    beta = [0]
-    theta = [0]
-    gamma = [0]
-
+        
+    delta, theta, alpha, beta, gamma = [0]
     
 try:
     server = MuseServer()
