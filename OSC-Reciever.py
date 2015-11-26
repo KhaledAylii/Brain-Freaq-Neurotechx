@@ -1,12 +1,16 @@
 from liblo import *
 import sys 
 import time
-
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import numpy as np
+import csv
 
 class MuseServer(ServerThread):
     #listen for messages on port 5000
     def __init__(self):
         ServerThread.__init__(self, 5000)
+        
     alpha, delta, beta, theta, gamma = [], [], [], [], []
     #receive EEG data
     @make_method('/muse/elements/alpha_absolute', 'ffff')
@@ -31,7 +35,7 @@ class MuseServer(ServerThread):
     def gamma_callback(self, path, args):
         l_ear, l_forehead, r_forehead, r_ear = args
         self.gamma = [x * 10 for x in list(args)]
-    
+
 try:
     server = MuseServer()
 except ServerError, err:
@@ -40,8 +44,14 @@ except ServerError, err:
 
 
 server.start()
-
 if __name__ == "__main__":
     while 1:
-        print server.alpha
+        with open('data.csv', 'w') as fp:
+            writeData = csv.writer(fp, delimiter=',')
+            data = [[server.alpha],
+                    [server.delta],
+                    [server.beta],
+                    [server.theta],
+                    [server.gamma]]
+            writeData.writerows(data)
         time.sleep(1)
