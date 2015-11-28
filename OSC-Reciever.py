@@ -1,10 +1,11 @@
 from liblo import *
 import sys 
 import time
+import matplotlib
+matplotlib.use('TKAgg')
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import numpy as np
-import csv
 
 class MuseServer(ServerThread):
     #listen for messages on port 5000
@@ -45,13 +46,24 @@ except ServerError, err:
 
 server.start()
 if __name__ == "__main__":
+    def animated_barplot():
+            N = 5
+            x = [1,1,1,1,1]
+            rects = plt.bar(range(N), x,  align = 'center')
+            for i in range(50):
+                x = [server.alpha[0],
+                     server.delta[0],
+                     server.beta[0],
+                     server.theta[0],
+                     server.gamma[0]]
+                for rect, h in zip(rects, x):
+                    rect.set_height(h)
+                fig.canvas.draw()
+
+    fig = plt.figure()
+    win = fig.canvas.manager.window
+    win.after(100, animated_barplot)
+    plt.show()
     while 1:
-        with open('data.csv', 'w') as fp:
-            writeData = csv.writer(fp, delimiter=',')
-            data = [[server.alpha],
-                    [server.delta],
-                    [server.beta],
-                    [server.theta],
-                    [server.gamma]]
-            writeData.writerows(data)
+        print "swag"
         time.sleep(1)
