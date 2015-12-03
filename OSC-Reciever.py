@@ -12,7 +12,7 @@ class MuseServer(ServerThread):
     def __init__(self):
         ServerThread.__init__(self, 5000)
         
-    alpha, delta, beta, theta, gamma = [], [], [], [], []
+    alpha, delta, beta, theta, gamma = [0], [0], [0], [0], [0]
     #receive EEG data
     @make_method('/muse/elements/alpha_absolute', 'ffff')
     def alpha_callback(self, path, args):
@@ -20,7 +20,7 @@ class MuseServer(ServerThread):
         #recives data from each sensor at the path
         self.alpha = [x * 10 for x in list(args)]
         #stores values from each sensor in bels and converts them to decibels by multiplying it by 10
-    @make_method('/muse/elements/alpha_absolute', 'ffff')
+    @make_method('/muse/elements/delta_absolute', 'ffff')
     def delta_callback(self, path, args):
         l_ear, l_forehead, r_forehead, r_ear = args
         self.delta = [x * 10 for x in list(args)]
@@ -48,15 +48,21 @@ server.start()
 if __name__ == "__main__":
     def animated_barplot():
             N = 5
-            x = [1,1,1,1,1]
-            rects = plt.bar(range(N), x,  align = 'center')
-            for i in range(50):
+            x = [20,20,20,20,20]
+            rects = plt.barh(range(N), x,  align = 'center')
+            while 1:
                 x = [server.alpha[0],
                      server.delta[0],
                      server.beta[0],
                      server.theta[0],
                      server.gamma[0]]
                 for rect, h in zip(rects, x):
+                    x = [server.alpha[0],
+                         server.delta[0],
+                         server.beta[0],
+                         server.theta[0],
+                         server.gamma[0]]
+                    print "swag"
                     rect.set_height(h)
                 fig.canvas.draw()
 
@@ -65,5 +71,4 @@ if __name__ == "__main__":
     win.after(100, animated_barplot)
     plt.show()
     while 1:
-        print "swag"
         time.sleep(1)
