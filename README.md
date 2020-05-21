@@ -4,4 +4,4 @@ Required Libraries:
 1) Matplotlib 
 2) Liblo
 3) numpy
-Built by Khaled Ali: www.studiokhaled.com
+Built by Khaled Ali
